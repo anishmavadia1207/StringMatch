@@ -1,0 +1,48 @@
+﻿<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", () => {
+        async function getMatches() {
+            const text = document.getElementById('txt').value;
+            const subText = document.getElementById('sub-txt').value;
+            const matchIndexSpan = document.getElementById("match-indexes");
+            const matchArea = document.getElementById("match-area");
+
+            const response = await fetch(`/home/matches?text=${text}&subText=${subText}`,
+                {
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    method: "GET"
+                });
+            const matches = await response.json();
+            if (matches.length === 0) {
+                matchIndexSpan.textContent = 'No matches found';
+            }
+            else {
+                matchIndexSpan.textContent = [...matches].join(",");
+            }
+            matchArea.classList.remove("d-none");
+        }
+
+        document.getElementById("btn-matches").addEventListener("click", async () => await getMatches());
+    });
+</script>
+
+<div>
+    <div class="mt-3">
+        <div class="mb-2">
+            <label class="w-25" for="txt">Text:</label>
+            <input class="w-75" type="text" id="txt" />
+        </div>
+        <div class="mb-2">
+            <label class="w-25" for="sub-txt">SubText:</label>
+            <input class="w-75" type="text" id="sub-txt" />
+        </div>
+    </div>
+
+    <input class="btn-primary" type="button" id="btn-matches" value="Find SubText Matches" />
+
+    <div id="match-area" class="d-none">
+        <label>Matches indexes:</label>
+        <span id="match-indexes"></span>
+    </div>
+</div>
